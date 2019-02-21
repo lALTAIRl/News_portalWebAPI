@@ -12,7 +12,7 @@ namespace News_portal.BLL.Interfaces
 
         Task<IEnumerable<News>> FindNewsAsync(Func<News, bool> predicate);
 
-        Task<IQueryable<News>> SelectNewsAsync(Func<News, bool> predicate);
+        Task<IQueryable<News>> Query();
 
         Task<News> GetNewsByIdAsync(int id);
 
@@ -24,10 +24,10 @@ namespace News_portal.BLL.Interfaces
 
         Task<int> CountNewsAsync(Func<News, bool> predicate);
 
-        Task<List<News>> GetUsersFavouritesAsync(string id);
+        Task<List<News>> GetUsersFavoritesAsync(string id);
 
-        Task RemoveNewsFromUserFavourites(int newsId, string userId);
+        Task RemoveNewsFromUserFavorites(int newsId, string userId);
 
-        Task AddNewsToUserFavourites(int newsId, string userId);
+        Task AddNewsToUserFavorites(int newsId, string userId);
     }
 }

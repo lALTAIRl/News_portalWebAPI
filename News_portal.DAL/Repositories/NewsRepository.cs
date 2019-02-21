@@ -25,11 +25,11 @@ namespace News_portal.DAL.Repositories
             return await _context.Set<News>().AsNoTracking().ToListAsync();
         }
 
-        public async Task<IQueryable<News>> SelectNewsAsync(Func<News, bool> predicate)
+        public async Task<IQueryable<News>> Query()
         {
             return await Task.Run(() =>
             {
-                return _context.Set<News>().AsNoTracking().Where(predicate).AsQueryable();
+                return _context.Set<News>().AsNoTracking();
             });
         }
 
@@ -75,13 +75,13 @@ namespace News_portal.DAL.Repositories
             await Save();
         }
 
-        public async Task<List<News>> GetUsersFavouritesAsync(string id)
+        public async Task<List<News>> GetUsersFavoritesAsync(string id)
         {
-            var news = await _context.NewsCollection.Where(u => u.NewsApplicationUsers.Select(x => x.ApplicationUserId).Contains(id)).AsNoTracking().ToListAsync();
+            var news = await _context.NewsCollection.Where(u => u.NewsApplicationUsers.Select(x => x.UserId).Contains(id)).AsNoTracking().ToListAsync();
             return news;
         }
 
-        public async Task RemoveNewsFromUserFavourites(int newsId, string userId)
+        public async Task RemoveNewsFromUserFavorites(int newsId, string userId)
         {
             var favouriteNews = await _context.FindAsync<NewsApplicationUser>(newsId, userId);
             if (favouriteNews != null)
@@ -91,15 +91,14 @@ namespace News_portal.DAL.Repositories
             }
         }
 
-        public async Task AddNewsToUserFavourites(int newsId, string userId)
+        public async Task AddNewsToUserFavorites(int newsId, string userId)
         {
-            var news = await _context.NewsCollection.SingleAsync(n => n.Id == newsId);
             var favouriteNews = new NewsApplicationUser
             {
                 NewsId = newsId,
-                FavouriteNews = news,
-                ApplicationUserId = userId,
-                ApplicationUserFavourited = await _context.Users.SingleAsync(u => u.Id == userId)
+                FavouriteNews = await _context.NewsCollection.SingleAsync(n => n.Id == newsId),
+                UserId = userId,
+                UserFavoritedBy = await _context.Users.SingleAsync(u => u.Id == userId)
             };
             if (await _context.FindAsync<NewsApplicationUser>(newsId, userId) == null)
             {

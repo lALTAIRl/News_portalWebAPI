@@ -11,6 +11,7 @@ using News_portal.DAL.Data;
 using News_portal.DAL.Entities;
 using News_portal.DAL.Interfaces;
 using News_portal.DAL.Repositories;
+using AutoMapper;
 
 namespace News_portal
 {
@@ -25,27 +26,26 @@ namespace News_portal
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddTransient<INewsRepository, NewsRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+
             services.AddTransient<INewsService, NewsService>();
+            services.AddTransient<IUserService, UserService>();
+
+            services.AddCors();
+
+            services.AddAutoMapper();
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-                //.ConfigureApiBehaviorOptions(options =>
-                //{
-                //    options.SuppressConsumesConstraintForFormFileParameters = true;
-                //    options.SuppressInferBindingSourcesForParameters = true;
-                //    options.SuppressModelStateInvalidFilter = true;
-                //    options.SuppressMapClientErrors = true;
 
-                //    options.ClientErrorMapping[404].Link = "https://httpstatuses.com/404";
-                //});
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -58,10 +58,11 @@ namespace News_portal
             {
                 app.UseHsts();
             }
-
-            app.UseStaticFiles();
+   
+            app.UseStaticFiles(); 
             app.UseHttpsRedirection();
             app.UseMvc();
+
         }
     }
 }

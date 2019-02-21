@@ -30,9 +30,9 @@ namespace News_portal.BLL.Services
           return await _newsRepository.FindNewsAsync(predicate);
         }
 
-        public async Task<IQueryable<News>> SelectNewsAsync(Func<News, bool> predicate)
+        public async Task<IQueryable<News>> Query()
         {
-            return await _newsRepository.SelectNewsAsync(predicate);
+            return await _newsRepository.Query();
         }
 
         public async Task<News> GetNewsByIdAsync(int id)
@@ -60,19 +60,19 @@ namespace News_portal.BLL.Services
             return await _newsRepository.CountNewsAsync(predicate);
         }
 
-        public async Task<List<News>> GetUsersFavouritesAsync(string id)
+        public async Task<List<News>> GetUsersFavoritesAsync(string id)
         {
-            return await _newsRepository.GetUsersFavouritesAsync(id);
+            return await _newsRepository.GetUsersFavoritesAsync(id);
         }
 
-        public async Task RemoveNewsFromUserFavourites(int newsId, string userId)
+        public async Task RemoveNewsFromUserFavorites(int newsId, string userId)
         {
-            await _newsRepository.RemoveNewsFromUserFavourites(newsId, userId);
+            await _newsRepository.RemoveNewsFromUserFavorites(newsId, userId);
         }
 
-        public async Task AddNewsToUserFavourites(int newsId, string userId)
+        public async Task AddNewsToUserFavorites(int newsId, string userId)
         {
-            await _newsRepository.AddNewsToUserFavourites(newsId, userId);
+            await _newsRepository.AddNewsToUserFavorites(newsId, userId);
         }
 
     }

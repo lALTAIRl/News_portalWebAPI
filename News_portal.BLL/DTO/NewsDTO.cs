@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace News_portal.DTO
+namespace News_portal.BLL.DTO
 {
     public class NewsDTO
     {

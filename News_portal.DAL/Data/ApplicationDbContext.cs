@@ -20,7 +20,7 @@ namespace News_portal.DAL.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<NewsApplicationUser>()
-                .HasKey(key => new { key.NewsId, key.ApplicationUserId });
+                .HasKey(key => new { key.NewsId, key.UserId });
 
             base.OnModelCreating(builder);
 
