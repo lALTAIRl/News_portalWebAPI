@@ -4,7 +4,7 @@ using System.Text;
 
 namespace News_portal.BLL.DTO
 {
-    class ApplicationUserDTO
+    public class ApplicationUserDTO
     {
         public string Id { get; set; }
 
