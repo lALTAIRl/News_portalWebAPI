@@ -1,44 +1,53 @@
-﻿using News_portal.BLL.Interfaces;
+﻿using Microsoft.AspNetCore.Identity;
+using News_portal.BLL.Interfaces;
 using News_portal.DAL.Entities;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace News_portal.BLL.Services
 {
     public class UserService : IUserService
     {
+        private readonly UserManager<ApplicationUser> _userManager;
 
-
-        public Task<ApplicationUser> Authenticate(string username, string password)
+        public UserService(UserManager<ApplicationUser> userManager)
         {
-            throw new NotImplementedException();
+            _userManager = userManager;
         }
 
-        public Task<ApplicationUser> Create(ApplicationUser user, string password)
+        public async Task<ApplicationUser> CreateUserAsync(ApplicationUser user, string password)
         {
-            throw new NotImplementedException();
+            await _userManager.CreateAsync(user, password);
+            return user;
         }
 
-        public Task Delete(int id)
+        public async Task DeleteUserAsync(string id)
         {
-            throw new NotImplementedException();
+            await _userManager.DeleteAsync(await _userManager.FindByIdAsync(id));
         }
 
-        public Task<IEnumerable<ApplicationUser>> GetAll()
+        public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                return _userManager.Users;
+            });
         }
 
-        public Task<ApplicationUser> GetById(int id)
+        public async Task<ApplicationUser> GetUserByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(id);
+            return user;
         }
 
-        public Task Update(ApplicationUser user, string password = null)
+        public async Task<ApplicationUser> GetUserByNameAsync(string username)
         {
-            throw new NotImplementedException();
+            return await _userManager.FindByNameAsync(username);
+        }
+
+        public async Task UpdateUserAsync(ApplicationUser user, string password = null)
+        {
+            await _userManager.UpdateAsync(user);
         }
     }
 }

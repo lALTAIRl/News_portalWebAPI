@@ -6,16 +6,16 @@ namespace News_portal.BLL.Interfaces
 {
     public interface IUserService
     {
-        Task<ApplicationUser> Authenticate(string username, string password);
+        Task<IEnumerable<ApplicationUser>> GetAllUsersAsync();
 
-        Task<IEnumerable<ApplicationUser>> GetAll();
+        Task<ApplicationUser> GetUserByIdAsync(string id);
 
-        Task<ApplicationUser> GetById(int id);
+        Task<ApplicationUser> GetUserByNameAsync(string username);
 
-        Task<ApplicationUser> Create(ApplicationUser user, string password);
+        Task<ApplicationUser> CreateUserAsync(ApplicationUser user, string password);
 
-        Task Update(ApplicationUser user, string password = null);
+        Task UpdateUserAsync(ApplicationUser user, string password = null);
 
-        Task Delete(int id);
+        Task DeleteUserAsync(string id);
     }
 }
