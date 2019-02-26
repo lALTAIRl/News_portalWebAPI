@@ -6,9 +6,11 @@ using News_portal.BLL.Interfaces;
 using News_portal.DAL.Entities;
 using News_portal.BLL.DTO;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace News_portal.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     //[ApiController]
     public class NewsController : ControllerBase
@@ -21,6 +23,7 @@ namespace News_portal.Controllers
             _mapper = mapper;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NewsDTO>>> GetAllNews()
         {
@@ -28,6 +31,7 @@ namespace News_portal.Controllers
             return Ok(newsCollection);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}", Name = "Get")]
         public async Task<ActionResult<NewsDetailedDTO>> GetNews(int id)
         {
@@ -49,7 +53,7 @@ namespace News_portal.Controllers
             var news = _mapper.Map<News>(newsDTO);
             news.DateOfCreating = DateTime.Now;
             await _newsService.CreateNewsAsync(news);
-            return Ok(news);
+            return Ok(_mapper.Map<NewsDetailedDTO>(news));
 
         }
 
@@ -67,7 +71,7 @@ namespace News_portal.Controllers
             }
             _mapper.Map(newsDTO, news);
             await _newsService.UpdateNewsAsync(news);
-            return Ok(news);
+            return Ok(_mapper.Map<NewsDetailedDTO>(news));
         }
 
         [HttpDelete("{id}")]

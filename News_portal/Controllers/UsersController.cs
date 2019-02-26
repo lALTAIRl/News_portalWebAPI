@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using News_portal.BLL.Interfaces;
 using News_portal.BLL.DTO;
-using Microsoft.AspNetCore.Authorization;
+using News_portal.BLL.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace News_portal.Controllers
 {

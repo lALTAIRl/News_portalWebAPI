@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using News_portal.BLL.DTO;
+using News_portal.DAL.Entities;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using News_portal.BLL.DTO;
-using News_portal.DAL.Entities;
 
 namespace News_portal.Controllers
 {
@@ -29,22 +29,23 @@ namespace News_portal.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost]
-        public async Task<object> Login([FromBody] ApplicationUserDTO model)
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Login([FromBody] ApplicationUserDTO model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
             if (result.Succeeded)
             {
                 var appUser = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
-                return await GenerateJwtToken(model.Email, appUser);
+                return Ok(await GenerateJwtToken(model.Email, appUser));
             }
 
-            throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
+            return BadRequest("Wrong UserName or Password");
+            //throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
         }
 
-        [HttpPost]
-        public async Task<object> Register([FromBody] ApplicationUserDTO model)
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Register([FromBody] ApplicationUserDTO model)
         {
             var user = new ApplicationUser
             {
@@ -56,13 +57,13 @@ namespace News_portal.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                return await GenerateJwtToken(model.Email, user);
+                return Ok(await GenerateJwtToken(model.Email, user));
             }
-
-            throw new ApplicationException("UNKNOWN_ERROR");
+            return BadRequest("Invalid data");
+            //throw new ApplicationException("UNKNOWN_ERROR");
         }
 
-        private async Task<object> GenerateJwtToken(string email, ApplicationUser user)
+        private async Task<IActionResult> GenerateJwtToken(string email, ApplicationUser user)
         {
             var claims = new List<Claim>
             {
@@ -83,7 +84,7 @@ namespace News_portal.Controllers
                 signingCredentials: creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return Ok(new JwtSecurityTokenHandler().WriteToken(token));
         }
     }
 }
