@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using News_portal.BLL.DTO;
+using News_portal.BLL.Interfaces;
 using News_portal.DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,45 +16,52 @@ using System.Threading.Tasks;
 
 namespace News_portal.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IMapper mapper, IUserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _mapper = mapper;
+            _userService = userService;
         }
 
-        [HttpPost("[action]")]
+        [HttpPost]
         public async Task<IActionResult> Login([FromBody] ApplicationUserDTO model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
             if (result.Succeeded)
             {
-                var appUser = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
-                return Ok(await GenerateJwtToken(model.Email, appUser));
+                var user = await _userService.GetUserByEmailAsync(model.Email);
+                //var user = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
+                return Ok(await GenerateJwtToken(model.Email, user));
             }
 
             return BadRequest("Wrong UserName or Password");
             //throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
         }
 
-        [HttpPost("[action]")]
+        [HttpPost]
         public async Task<IActionResult> Register([FromBody] ApplicationUserDTO model)
         {
-            var user = new ApplicationUser
-            {
-                UserName = model.Email,
-                Email = model.Email
-            };
+            var user = _mapper.Map<ApplicationUser>(model);
+            //var user = new ApplicationUser
+            //{
+            //    UserName = model.Email,
+            //    Email = model.Email
+            //};
             var result = await _userManager.CreateAsync(user, model.Password);
+            //var result = await _userService.CreateUserAsync(user, model.Password);
 
             if (result.Succeeded)
             {

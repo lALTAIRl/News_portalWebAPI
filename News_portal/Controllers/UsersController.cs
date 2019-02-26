@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace News_portal.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -25,23 +25,24 @@ namespace News_portal.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ApplicationUserDTO>>> GetAllUsers()
         {
-            return Ok(await _userService.GetAllUsersAsync());
+            return Ok(_mapper.Map<IEnumerable<ApplicationUserDTO>>(await _userService.GetAllUsersAsync()));
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ApplicationUserDTO>> GetUser(string id)
         {
-            return Ok(await _userService.GetUserByIdAsync(id));
+            return Ok(_mapper.Map<ApplicationUserDTO>(await _userService.GetUserByIdAsync(id)));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateUser(ApplicationUserDTO userDTO)
-        {
+        {          
             await _userService.CreateUserAsync(_mapper.Map<ApplicationUser>(userDTO), userDTO.Password);
-            return Ok();
+            var user = _userService.GetUserByIdAsync(userDTO.Id);
+            return Ok(_mapper.Map(user, userDTO));
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(ApplicationUserDTO userDTO)
         {
             var user = _userService.GetUserByIdAsync(userDTO.Id);
@@ -49,7 +50,7 @@ namespace News_portal.Controllers
             return Ok(_mapper.Map(user, userDTO));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             await _userService.DeleteUserAsync(id);

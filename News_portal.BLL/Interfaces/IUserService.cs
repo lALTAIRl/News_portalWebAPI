@@ -12,6 +12,8 @@ namespace News_portal.BLL.Interfaces
 
         Task<ApplicationUser> GetUserByNameAsync(string username);
 
+        Task<ApplicationUser> GetUserByEmailAsync(string email);
+
         Task<ApplicationUser> CreateUserAsync(ApplicationUser user, string password);
 
         Task UpdateUserAsync(ApplicationUser user, string password = null);

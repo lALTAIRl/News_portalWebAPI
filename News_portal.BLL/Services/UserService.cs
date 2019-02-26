@@ -34,6 +34,12 @@ namespace News_portal.BLL.Services
             });
         }
 
+        public async Task<ApplicationUser> GetUserByEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user;
+        }
+
         public async Task<ApplicationUser> GetUserByIdAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
