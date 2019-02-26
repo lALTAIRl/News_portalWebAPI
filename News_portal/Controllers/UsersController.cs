@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using News_portal.BLL.Interfaces;
 using News_portal.BLL.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace News_portal.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

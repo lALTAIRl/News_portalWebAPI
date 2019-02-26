@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using News_portal.DAL.Data;
 using News_portal.DAL.Entities;
 using News_portal.DAL.Interfaces;
@@ -9,11 +10,13 @@ namespace News_portal.DAL.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        protected readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserRepository(ApplicationDbContext context)
+        public UserRepository(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
