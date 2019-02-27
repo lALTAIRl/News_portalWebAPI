@@ -8,8 +8,8 @@ namespace News_portal.BLL.Helpers
     {
         public AutoMapperProfile()
         {
-            CreateMap<ApplicationUser, ApplicationUserDTO>();
-            CreateMap<ApplicationUserDTO, ApplicationUser>();
+            CreateMap<ApplicationUser, OutputApplicationUserDTO>();
+            CreateMap<InputApplicationUserDTO, ApplicationUser>();
 
             CreateMap<News, NewsDTO>();
             CreateMap<News, NewsDetailedDTO>();

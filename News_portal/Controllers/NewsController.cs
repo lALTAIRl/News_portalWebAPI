@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace News_portal.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     //[ApiController]
     public class NewsController : ControllerBase
     {

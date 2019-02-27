@@ -3,10 +3,14 @@
 //using News_portal.DAL.Entities;
 //using System;
 //using System.Collections.Generic;
-//using System.IdentityModel.Tokens.Jwt;
+//using System.IdentityModel.Tokens;
 //using System.Security.Claims;
 //using System.Text;
 //using System.Threading.Tasks;
+//using Microsoft.Extensions.Identity.Stores;
+//using Microsoft.Extensions.Configuration;
+//using Microsoft.AspNetCore.Identity;
+//using System.IdentityModel.Tokens.Jwt;
 
 //namespace News_portal.BLL.Services
 //{

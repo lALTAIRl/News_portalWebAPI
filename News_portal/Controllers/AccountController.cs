@@ -36,15 +36,15 @@ namespace News_portal.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] ApplicationUserDTO model)
+        public async Task<IActionResult> Login([FromBody] InputApplicationUserDTO userDTO)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(userDTO.Email, userDTO.Password, false, false);
 
             if (result.Succeeded)
             {
-                var user = await _userService.GetUserByEmailAsync(model.Email);
-                //var user = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
-                return Ok(await GenerateJwtToken(model.Email, user));
+                var user = await _userService.GetUserByEmailAsync(userDTO.Email);
+                //var user = _userManager.Users.SingleOrDefault(r => r.Email == userDTO.Email);
+                return Ok(await GenerateJwtToken(userDTO.Email, user));
             }
 
             return BadRequest("Wrong UserName or Password");
@@ -52,24 +52,30 @@ namespace News_portal.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] ApplicationUserDTO model)
+        public async Task<IActionResult> Register([FromBody] InputApplicationUserDTO userDTO)
         {
-            var user = _mapper.Map<ApplicationUser>(model);
+            var user = _mapper.Map<ApplicationUser>(userDTO);
+            user.UserName = user.Email;
             //var user = new ApplicationUser
             //{
-            //    UserName = model.Email,
-            //    Email = model.Email
+            //    UserName = userDTO.Email,
+            //    Email = userDTO.Email
             //};
-            var result = await _userManager.CreateAsync(user, model.Password);
-            //var result = await _userService.CreateUserAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, userDTO.Password);
+            //var result = await _userService.CreateUserAsync(user, userDTO.Password);
 
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                return Ok(await GenerateJwtToken(model.Email, user));
+                return Ok(await GenerateJwtToken(userDTO.Email, user));
             }
             return BadRequest("Invalid data");
             //throw new ApplicationException("UNKNOWN_ERROR");
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            return Ok();
         }
 
         private async Task<IActionResult> GenerateJwtToken(string email, ApplicationUser user)
